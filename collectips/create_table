@@ -1,0 +1,1 @@
+CREATE TABLE `ip_info` (   `IP` char(64) NOT NULL,   `PORT` varchar(64) NOT NULL,   `POSITION` varchar(64),   `TYPE` char(64),   `SPEED` char(64),   `LAST_CHECK_TIME` datetime DEFAULT NULL,  PRIMARY KEY (`IP`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

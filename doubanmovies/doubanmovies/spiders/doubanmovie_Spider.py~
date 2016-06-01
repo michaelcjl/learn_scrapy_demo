@@ -1,0 +1,169 @@
+#!/usr/bin/python  
+# -*- coding:utf-8 -*-  
+  
+# from scrapy.contrib.spiders import  CrawlSpider,Rule  
+'''  
+from scrapy.spiders import Spider  
+from scrapy.http import Request  
+from scrapy.selector import Selector  
+from doubanmovies.items import DoubanmoviesItem 
+
+
+class DoubanmovieSpider(Spider):  
+	"""爬虫DoubanmoviesItem"""  
+	
+	name = "Doubanmovies"  
+	
+	#减慢爬取速度 为1s  
+	#download_delay = 3  
+	allowed_domains = ["https://movie.douban.com"]  
+	start_urls = [   
+		#第一篇文章地址  
+		"https://movie.douban.com/top250?start=0&filter="
+	]  
+	
+	def parse(self, response):  
+		sel = Selector(response)  
+		
+		lis = sel.xpath('//ol[@class="grid_view"]/li')  
+		items = []  
+		#获得文章url和标题  
+		for li in lis:
+			item = DoubanmoviesItem()   			
+#			rank= li.xpath('//div[@class="pic"]/em/text()').extract()  
+#			name = li.xpath('//div[@class="hd"]/a/span[1]/text()').extract()  
+			
+#			item['rank'] = [r.encode('utf-8') for r in rank] 
+#			item['name'] = [n.encode('utf-8') for n in name]  
+
+			item['rank'] = li.xpath('div/div[1]/em/text()')[0].extract() 
+			item['name'] = li.xpath('div/div[2]/div[1]/a/span[1]/text()')[0].extract()
+
+#			item['rank'] = li.xpath('//div[@class="pic"]/em/text()').extract()  
+#			item['name'] = li.xpath('//div[@class="hd"]/a/span[1]/text()').extract()  
+
+			items.append(item)
+			
+		return items
+
+'''
+###############################################################
+'''
+import re
+import json
+from scrapy.selector import Selector
+try:
+    from scrapy.spiders import Spider
+except:
+    from scrapy.spiders import BaseSpider as Spider
+from scrapy.utils.response import get_base_url
+from scrapy.utils.url import urljoin_rfc
+from scrapy.spiders import CrawlSpider, Rule
+from scrapy.linkextractors import LinkExtractor as SE
+from doubanmovies.items import *
+
+class DoubanmovieSpider(CrawlSpider):  
+	"""爬虫DoubanmoviesItem"""  
+	
+	name = "Doubanmovies"  
+	
+	#减慢爬取速度 为1s  
+	#download_delay = 3  
+	allowed_domains = ["https://movie.douban.com"]  
+	start_urls = [   
+		#第一篇文章地址  
+		"https://movie.douban.com/top250?start=0&filter="  
+	]  
+	rules = [
+		Rule(SE(allow=("\?start=\d{1,}&filter=")), 
+						follow=True,
+						callback='parse_item')
+	]
+
+    #提取数据到Items里面，主要用到XPath和CSS选择器提取网页数据
+	def parse_item(self, response):
+        #print "-----------------"
+
+		sel = Selector(response)
+		lis = sel.xpath('//ol[@class="grid_view"]/li')  
+		items = []  
+		#获得文章url和标题  
+		for li in lis:
+			item = DoubanmoviesItem()   			
+#			rank= li.xpath('//div[@class="pic"]/em/text()').extract()  
+#			name = li.xpath('//div[@class="hd"]/a/span[1]/text()').extract()  
+			
+#			item['rank'] = [r.encode('utf-8') for r in rank] 
+#			item['name'] = [n.encode('utf-8') for n in name]  
+
+			item['rank'] = li.xpath('div/div[1]/em/text()')[0].extract() 
+			item['name'] = li.xpath('div/div[2]/div[1]/a/span[1]/text()')[0].extract()
+
+#			item['rank'] = li.xpath('//div[@class="pic"]/em/text()').extract()  
+#			item['name'] = li.xpath('//div[@class="hd"]/a/span[1]/text()').extract()  
+
+			items.append(item)
+			
+		return items  
+'''
+##################################################################################
+
+
+#coding=utf-8
+import re
+import json
+from scrapy.selector import Selector
+try:
+    from scrapy.spiders import Spider
+except:
+    from scrapy.spiders import BaseSpider as Spider
+from scrapy.utils.response import get_base_url
+from scrapy.utils.url import urljoin_rfc
+from scrapy.spiders import CrawlSpider, Rule
+from scrapy.linkextractors import LinkExtractor as SE
+from doubanmovies.items import DoubanmoviesItem 
+
+
+
+class DoubanmovieSpider(CrawlSpider):  
+	"""爬虫DoubanmoviesItem"""  
+	
+	name = "Doubanmovies"  
+	
+	#减慢爬取速度 为1s  
+	#download_delay = 3  
+	allowed_domains = ["movie.douban.com"]  
+	start_urls = [   
+		#第一篇文章地址  
+		"https://movie.douban.com/top250?start=0&filter="
+	]  
+
+	rules = [
+        Rule(SE(allow=("\?start=\d{1,}&filter=")), 
+                         follow=True,
+                         callback='parse_item')
+    ]
+
+	
+	def parse_item(self, response):
+        #print "-----------------"
+		items = []
+		sel = Selector(response)	
+		lis = sel.xpath('//ol[@class="grid_view"]/li')   
+ 
+		for li in lis:
+			item = DoubanmoviesItem()   			
+
+			item['rank'] = li.xpath('div/div[1]/em/text()')[0].extract() 
+			item['name'] = li.xpath('div/div[2]/div[1]/a/span[1]/text()')[0].extract()
+
+			items.append(item)
+			
+		return items
+
+
+
+
+
+
+
